@@ -37,9 +37,9 @@ get_download_url() {
     fi
 }
 
-# 使用busybox解压文件
+# 使用busybox解压文件（不显示详细过程）
 unzip_with_busybox() {
-    busybox unzip "$1" -d "$2"
+    busybox unzip "$1" -d "$2" > /dev/null 2>&1
 }
 
 # 备份UI目录
