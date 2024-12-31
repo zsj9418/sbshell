@@ -2,6 +2,7 @@
 
 # 定义颜色
 CYAN='\033[0;36m'
+GREEN='\033[0;32m'
 RED='\033[0;31m'
 NC='\033[0m' # 无颜色
 
@@ -61,13 +62,12 @@ echo -e "${CYAN}检测到的版本：本地版本 $LOCAL_VERSION,远程版本 $R
 
 # 比较版本号
 if [ "$LOCAL_VERSION" == "$REMOTE_VERSION" ]; then
-    echo -e "${GREEN}脚本版本为最新。${NC}"
-    read -rp "是否进行强制更新？(y/n): " force_update_choice
-    if [[ "$force_update_choice" =~ ^[Yy]$ ]]; then
-        echo -e "${RED}强制更新将忽略版本检查，直接更新所有脚本。${NC}"
-        regular_update
+    echo -e "${GREEN}脚本版本为最新，无需升级。${NC}"
+    read -rp "是否强制更新？(y/n): " force_update
+    if [[ "$force_update" =~ ^[Yy]$ ]]; then
+        echo -e "${CYAN}正在强制更新...${NC}"
     else
-        echo -e "${CYAN}已取消强制更新。${NC}"
+        echo -e "${CYAN}返回菜单。${NC}"
         rm -rf "$TEMP_DIR"
         exit 0
     fi
@@ -154,12 +154,11 @@ function reset_update() {
 echo -e "${CYAN}请选择更新方式：${NC}"
 echo -e "${GREEN}1. 常规更新${NC}"
 echo -e "${GREEN}2. 重置更新${NC}"
-echo -e "${GREEN}3. 强制更新${NC}"
 read -rp "请选择操作: " update_choice
 
 case $update_choice in
     1)
-        echo -e "${RED}常规更新只更新脚本内容,再次执行菜单内容才会执行新脚本.${NC}"
+        echo -e "${RED}常规更新只更新脚本内容,再次执行菜单内容才会执行新脚本。${NC}"
         read -rp "是否继续常规更新？(y/n): " confirm
         if [[ "$confirm" =~ ^[Yy]$ ]]; then
             regular_update
@@ -168,7 +167,7 @@ case $update_choice in
         fi
         ;;
     2)
-        echo -e "${RED}即将停止 sing-box 并重置所有内容,并初始化引导设置.${NC}"
+        echo -e "${RED}即将停止 sing-box 并重置所有内容,并初始化引导设置。${NC}"
         read -rp "是否继续重置更新？(y/n): " confirm
         if [[ "$confirm" =~ ^[Yy]$ ]]; then
             reset_update
@@ -176,17 +175,8 @@ case $update_choice in
             echo -e "${CYAN}重置更新已取消。${NC}"
         fi
         ;;
-    3)
-        echo -e "${RED}强制更新将忽略版本检查，直接更新所有脚本。${NC}"
-        read -rp "是否继续强制更新？(y/n): " confirm
-        if [[ "$confirm" =~ ^[Yy]$ ]]; then
-            regular_update
-        else
-            echo -e "${CYAN}强制更新已取消。${NC}"
-        fi
-        ;;
     *)
-        echo -e "${RED}无效的选择${NC}"
+        echo -e "${RED}无效的选择。${NC}"
         ;;
 esac
 
