@@ -44,6 +44,7 @@ SCRIPTS=(
     "manage_autostart.sh"      # 设置自启动
     "check_config.sh"          # 检查配置文件
     "update_scripts.sh"        # 更新脚本
+    "update_ui.sh"             # 更新控制面板
     "menu.sh"                  # 主菜单
 )
 
@@ -166,6 +167,7 @@ show_menu() {
     echo -e "${GREEN}9. 网络设置(只支持debian)${NC}"
     echo -e "${GREEN}10. 常用命令${NC}"
     echo -e "${GREEN}11. 更新脚本${NC}"
+    echo -e "${GREEN}12. 更新控制面板${NC}"
     echo -e "${GREEN}0. 退出${NC}"
     echo -e "${CYAN}=======================================${NC}"
 }
@@ -213,6 +215,8 @@ handle_choice() {
         11)
             bash "$SCRIPT_DIR/update_scripts.sh"
             ;;
+        12)
+            bash "$SCRIPT_DIR/update_ui.sh"
         0)
             exit 0
             ;;
