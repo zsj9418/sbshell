@@ -84,7 +84,7 @@ update_ui() {
     if unzip_with_busybox "$TEMP_DIR/ui.zip" "$TEMP_DIR"; then
         # 移动文件到UI目录
         sudo mv "$TEMP_DIR"/*/* "$UI_DIR"
-        echo -e "${CYAN}控制面板UI更新完成,请刷新浏览器！${NC}"
+        echo -e "${CYAN}控制面板UI更新完成,请 Ctrl+F5 刷新浏览器！${NC}"
     else
         # 还原备份
         restore_ui
