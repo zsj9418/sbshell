@@ -87,7 +87,7 @@ table inet sing-box {
         # 本地地址绕过
         fib daddr type local accept
 
-         # 保留地址绕过
+        # 保留地址绕过
         ip daddr @RESERVED_IPSET accept
 
         # 标记并重定向剩余流量
