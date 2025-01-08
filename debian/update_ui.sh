@@ -91,11 +91,11 @@ check_ui() {
 update_ui() {
     while true; do
         echo "请选择功能："
-        echo "1. 默认ui（依据配置文件）"
+        echo "1. 默认ui(依据配置文件）"
         echo "2. 安装/更新自选ui"
         echo "3. 检查是否存在ui面板"
         echo "按回车键退出"
-        read -r -p "请输入选项（1/2/3）或按回车键退出: " choice
+        read -r -p "请输入选项(1/2/3)或按回车键退出: " choice
 
         if [ -z "$choice" ]; then
             echo "退出程序。"
@@ -111,7 +111,7 @@ update_ui() {
                 echo "1. metacubexd面板"
                 echo "2. zashboard面板"
                 echo "3. yacd面板"
-                read -r -p "请输入选项（1/2/3）: " ui_choice
+                read -r -p "请输入选项(1/2/3): " ui_choice
 
                 case "$ui_choice" in
                     1)
@@ -124,7 +124,7 @@ update_ui() {
                         install_selected_ui "$YACD_URL"
                         ;;
                     *)
-                        echo -e "\033[31m无效选项，返回上级菜单。\033[0m"
+                        echo -e "\033[31m无效选项,返回上级菜单。\033[0m"
                         ;;
                 esac
                 ;;
