@@ -133,7 +133,7 @@ auto_setup() {
 
 # 检查是否需要初始化
 if [ ! -f "$INITIALIZED_FILE" ]; then
-    echo -e "${CYAN}进入初始化引导设置,回车继续输入skip跳过${NC}"
+    echo -e "${CYAN}回车进入初始化引导设置,输入skip跳过引导${NC}"
     read -r init_choice
     if [[ "$init_choice" =~ ^[Ss]kip$ ]]; then
         echo -e "${CYAN}跳过初始化引导，直接进入菜单...${NC}"
