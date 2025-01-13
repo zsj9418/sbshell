@@ -1,7 +1,7 @@
 #!/bin/bash
 
 UI_DIR="/etc/sing-box/ui"
-BACKUP_DIR="/etc/sing-box/ui_backup"
+BACKUP_DIR="/tmp/sing-box/ui_backup"
 TEMP_DIR="/tmp/sing-box-ui"
 
 METACUBEXD_URL="https://ghproxy.cc/https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip"
@@ -30,9 +30,9 @@ get_download_url() {
 
 backup_and_remove_ui() {
     if [ -d "$UI_DIR" ]; then
-        echo "备份当前ui文件夹..."
+        echo -e "备份当前ui文件夹..."
         mv "$UI_DIR" "$BACKUP_DIR/$(date +%Y%m%d%H%M%S)_ui"
-        echo "已备份至 $BACKUP_DIR"
+        echo -e "已备份至 $BACKUP_DIR"
     fi
 }
 
@@ -46,7 +46,7 @@ download_and_process_ui() {
     echo "正在下载面板..."
     curl -L "$url" -o "$temp_file"
     if [ $? -ne 0 ]; then
-        echo "下载失败，正在还原备份..."
+        echo -e "\e[31m下载失败,正在还原备份...\e[0m"
         [ -d "$BACKUP_DIR" ] && mv "$BACKUP_DIR/"* "$UI_DIR" 2>/dev/null
         return 1
     fi
@@ -58,10 +58,10 @@ download_and_process_ui() {
         mkdir -p "$UI_DIR"
         rm -rf "${UI_DIR:?}"/*
         mv "$TEMP_DIR"/*/* "$UI_DIR"
-        echo "面板安装完成"
+        echo -e "\e[32m面板安装完成\e[0m"
         return 0
     else
-        echo "解压失败，正在还原备份..."
+        echo -e "\e[31m解压失败,正在还原备份...\e[0m"
         [ -d "$BACKUP_DIR" ] && mv "$BACKUP_DIR/"* "$UI_DIR" 2>/dev/null
         return 1
     fi
@@ -82,9 +82,9 @@ install_selected_ui() {
 
 check_ui() {
     if [ -d "$UI_DIR" ] && [ "$(ls -A "$UI_DIR")" ]; then
-        echo -e "\e[32mui面板已安装\e[0m"  # 绿色
+        echo -e "\e[32mui面板已安装\e[0m"
     else
-        echo -e "\e[31mui面板未安装或为空\e[0m"  # 红色
+        echo -e "\e[31mui面板未安装或为空\e[0m"
     fi
 }
 
@@ -94,7 +94,6 @@ update_ui() {
         echo "1. 默认ui(依据配置文件）"
         echo "2. 安装/更新自选ui"
         echo "3. 检查是否存在ui面板"
-        echo "按回车键退出"
         read -r -p "请输入选项(1/2/3)或按回车键退出: " choice
 
         if [ -z "$choice" ]; then
@@ -105,6 +104,7 @@ update_ui() {
         case "$choice" in
             1)
                 install_default_ui
+                exit 0  # 更新结束后退出菜单
                 ;;
             2)
                 echo "请选择面板安装："
@@ -124,15 +124,16 @@ update_ui() {
                         install_selected_ui "$YACD_URL"
                         ;;
                     *)
-                        echo -e "\033[31m无效选项,返回上级菜单。\033[0m"
+                        echo -e "\e[31m无效选项,返回上级菜单。\e[0m"
                         ;;
                 esac
+                exit 0  # 更新结束后退出菜单
                 ;;
             3)
                 check_ui
                 ;;
             *)
-                echo "无效选项，返回主菜单"
+                echo -e "\e[31m无效选项,返回主菜单\e[0m"
                 ;;
         esac
     done
