@@ -4,8 +4,8 @@ UI_DIR="/etc/sing-box/ui"
 BACKUP_DIR="/tmp/sing-box/ui_backup"
 TEMP_DIR="/tmp/sing-box-ui"
 
-METACUBEXD_URL="https://ghproxy.cc/https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip"
 ZASHBOARD_URL="https://ghproxy.cc/https://github.com/Zephyruso/zashboard/archive/refs/heads/gh-pages.zip"
+METACUBEXD_URL="https://ghproxy.cc/https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip"
 YACD_URL="https://ghproxy.cc/https://github.com/MetaCubeX/Yacd-meta/archive/refs/heads/gh-pages.zip"
 
 # 创建备份目录
@@ -29,7 +29,7 @@ unzip_with_busybox() {
 
 get_download_url() {
     CONFIG_FILE="/etc/sing-box/config.json"
-    DEFAULT_URL="https://ghproxy.cc/https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip"
+    DEFAULT_URL="https://ghproxy.cc/https://github.com/Zephyruso/zashboard/archive/refs/heads/gh-pages.zip"
     
     if [ -f "$CONFIG_FILE" ]; then
         URL=$(grep -oP '(?<="external_ui_download_url": ")[^"]*' "$CONFIG_FILE")
@@ -127,9 +127,46 @@ setup_auto_update_ui() {
         fi
     fi
 
+    # 创建自动更新脚本
+    cat > /etc/sing-box/update-ui.sh <<EOF
+#!/bin/bash
+
+CONFIG_FILE="/etc/sing-box/config.json"
+DEFAULT_URL="https://ghproxy.cc/https://github.com/Zephyruso/zashboard/archive/refs/heads/gh-pages.zip"
+URL=\$(grep -oP '(?<="external_ui_download_url": ")[^"]*' "\$CONFIG_FILE")
+URL="\${URL:-\$DEFAULT_URL}"
+
+TEMP_DIR="/tmp/sing-box-ui"
+UI_DIR="/etc/sing-box/ui"
+BACKUP_DIR="/tmp/sing-box/ui_backup"
+
+# 创建备份目录
+mkdir -p "\$BACKUP_DIR"
+mkdir -p "\$TEMP_DIR"
+
+# 备份当前ui文件夹
+if [ -d "\$UI_DIR" ]; then
+    mv "\$UI_DIR" "\$BACKUP_DIR/\$(date +%Y%m%d%H%M%S)_ui"
+fi
+
+# 下载并解压新ui
+curl -L "\$URL" -o "\$TEMP_DIR/ui.zip"
+if busybox unzip "\$TEMP_DIR/ui.zip" -d "\$TEMP_DIR"; then
+    mkdir -p "\$UI_DIR"
+    rm -rf "\${UI_DIR:?}"/*
+    mv "\$TEMP_DIR"/*/* "\$UI_DIR"
+else
+    echo "解压失败，正在还原备份..."
+    [ -d "\$BACKUP_DIR" ] && mv "\$BACKUP_DIR/"* "\$UI_DIR" 2>/dev/null
+fi
+
+EOF
+
+    chmod a+x /etc/sing-box/update-ui.sh
+
     if [ "$schedule_choice" -eq 1 ]; then
         (crontab -l 2>/dev/null; echo "0 0 * * 1 /etc/sing-box/update-ui.sh") | crontab -
-        echo -e "\e[32m定时更新任务已设置，每周一执行一次\e[0m"
+        echo -e "\e[32m定时更新任务已设置,每周一执行一次\e[0m"
     else
         (crontab -l 2>/dev/null; echo "0 0 1 * * /etc/sing-box/update-ui.sh") | crontab -
         echo -e "\e[32m定时更新任务已设置,每月1号执行一次\e[0m"
@@ -160,17 +197,17 @@ update_ui() {
                 ;;
             2)
                 echo "请选择面板安装："
-                echo "1. metacubexd面板"
-                echo "2. zashboard面板"
+                echo "1. zashboard面板"
+                echo "2. metacubexd面板"
                 echo "3. yacd面板"
                 read -r -p "请输入选项(1/2/3): " ui_choice
 
                 case "$ui_choice" in
                     1)
-                        install_selected_ui "$METACUBEXD_URL"
+                        install_selected_ui "$ZASHBOARD_URL"
                         ;;
                     2)
-                        install_selected_ui "$ZASHBOARD_URL"
+                        install_selected_ui "$METACUBEXD_URL"
                         ;;
                     3)
                         install_selected_ui "$YACD_URL"
