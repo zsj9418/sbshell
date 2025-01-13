@@ -12,6 +12,17 @@ YACD_URL="https://ghproxy.cc/https://github.com/MetaCubeX/Yacd-meta/archive/refs
 mkdir -p "$BACKUP_DIR"
 mkdir -p "$TEMP_DIR"
 
+# 检查依赖并安装
+check_and_install_dependencies() {
+    if ! command -v busybox &> /dev/null; then
+        echo -e "\e[31mbusybox 未安装，正在安装...\e[0m"
+        sudo apt-get update
+        sudo apt-get install -y busybox
+        export PATH=$PATH:/bin/busybox
+        sudo chmod +x /bin/busybox
+    fi
+}
+
 unzip_with_busybox() {
     busybox unzip "$1" -d "$2" > /dev/null 2>&1
 }
@@ -88,13 +99,54 @@ check_ui() {
     fi
 }
 
+setup_auto_update_ui() {
+    local schedule_choice
+    while true; do
+        echo "请选择自动更新频率："
+        echo "1. 每周一"
+        echo "2. 每月1号"
+        read -rp "请输入选项(1/2, 默认为1): " schedule_choice
+        schedule_choice=${schedule_choice:-1}
+
+        if [[ "$schedule_choice" =~ ^[12]$ ]]; then
+            break
+        else
+            echo -e "\e[31m输入无效,请输入1或2。\e[0m"
+        fi
+    done
+
+    if crontab -l 2>/dev/null | grep -q '/etc/sing-box/update-ui.sh'; then
+        echo -e "\e[31m检测到已有自动更新任务。\e[0m"
+        read -rp "是否重新设置自动更新任务？(y/n): " confirm_reset
+        if [[ "$confirm_reset" =~ ^[Yy]$ ]]; then
+            crontab -l 2>/dev/null | grep -v '/etc/sing-box/update-ui.sh' | crontab -
+            echo "已删除旧的自动更新任务。"
+        else
+            echo -e "\e[36m保持已有的自动更新任务。返回菜单。\e[0m"
+            return
+        fi
+    fi
+
+    if [ "$schedule_choice" -eq 1 ]; then
+        (crontab -l 2>/dev/null; echo "0 0 * * 1 /etc/sing-box/update-ui.sh") | crontab -
+        echo -e "\e[32m定时更新任务已设置，每周一执行一次\e[0m"
+    else
+        (crontab -l 2>/dev/null; echo "0 0 1 * * /etc/sing-box/update-ui.sh") | crontab -
+        echo -e "\e[32m定时更新任务已设置,每月1号执行一次\e[0m"
+    fi
+
+    systemctl restart cron
+}
+
 update_ui() {
+    check_and_install_dependencies  # 检查并安装依赖
     while true; do
         echo "请选择功能："
         echo "1. 默认ui(依据配置文件）"
         echo "2. 安装/更新自选ui"
         echo "3. 检查是否存在ui面板"
-        read -r -p "请输入选项(1/2/3)或按回车键退出: " choice
+        echo "4. 设置定时自动更新面板"
+        read -r -p "请输入选项(1/2/3/4)或按回车键退出: " choice
 
         if [ -z "$choice" ]; then
             echo "退出程序。"
@@ -131,6 +183,9 @@ update_ui() {
                 ;;
             3)
                 check_ui
+                ;;
+            4)
+                setup_auto_update_ui
                 ;;
             *)
                 echo -e "\e[31m无效选项,返回主菜单\e[0m"
