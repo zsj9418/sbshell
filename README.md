@@ -14,7 +14,7 @@ Sbshell 是一款针对 官方sing-box 的辅助运行脚本，旨在解决官�
 
 ## 设备支持：
 
-目前支持系统为deiban/ubuntu/armbian, 后续有时间可能会适配openwrt。
+目前支持系统为deiban/ubuntu/armbian, 后续有时间可能会适配openwrt，暂时可以使用我另一个仓库EasySingbox的手动脚本。
 
 ## 一键脚本：
 ```
