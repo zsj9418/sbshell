@@ -25,7 +25,7 @@ bash <(curl -sL https://ghproxy.cc/https://raw.githubusercontent.com/qljsyph/sbs
 
 ### 系统信息自动显示美化脚本：(作者-千里)  
 ```
-bash <(curl -sL https://ghproxy.cc/https://raw.githubusercontent.com/qljsyph/bash-script/refs/heads/main/auto-sysinfo.sh)
+bash <(curl -sL https://ghj.rt2224.top/https://raw.githubusercontent.com/qljsyph/bash-script/refs/heads/main/auto-sysinfo.sh)
 ```
   执行后每次进入ssh会自动显示很多必要信息！
   作者仓库：  
@@ -35,7 +35,7 @@ bash <(curl -sL https://ghproxy.cc/https://raw.githubusercontent.com/qljsyph/bas
 
 ### 测试版：  
 tproxy： 
-https://ghproxy.cc/https://raw.githubusercontent.com/qichiyuhub/sbshell/refs/heads/master/config_template/config_tproxy_dev.json  
+https://ghj.rt2224.top/https://raw.githubusercontent.com/qichiyuhub/sbshell/refs/heads/master/config_template/config_tproxy_dev.json  
 
 tun： 
 https://ghproxy.cc/https://raw.githubusercontent.com/qichiyuhub/sbshell/refs/heads/master/config_template/config_tun_dev.json  
