@@ -33,16 +33,7 @@ bash <(curl -sL https://ghfast.top/https://raw.githubusercontent.com/qljsyph/DPI
 
 ## 适配配置文件：
 
-### 测试版：  
-tproxy： 
-https://ghfast.top/https://raw.githubusercontent.com/qichiyuhub/sbshell/refs/heads/master/config_template/config_tproxy_dev.json  
-
-tun： 
-https://ghfast.top/https://raw.githubusercontent.com/qichiyuhub/sbshell/refs/heads/master/config_template/config_tun_dev.json  
-
-  
-
-### 稳定版：  
+### 稳定版(1.11)：  
 tproxy：  
 https://ghfast.top/https://raw.githubusercontent.com/qichiyuhub/sbshell/refs/heads/master/config_template/config_tproxy.json  
 
