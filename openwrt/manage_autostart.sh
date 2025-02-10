@@ -33,9 +33,8 @@ case $autostart_choice in
 
         echo -e "${GREEN}启用自启动...${NC}"
 
-        # 启用并启动服务
+        # 启用服务
         /etc/init.d/sing-box enable
-        /etc/init.d/sing-box start
         cmd_status=$?
 
         if [ "$cmd_status" -eq 0 ]; then
@@ -53,9 +52,8 @@ case $autostart_choice in
 
         echo -e "${RED}禁用自启动...${NC}"
         
-        # 禁用并停止服务
+        # 禁用服务
         /etc/init.d/sing-box disable
-        /etc/init.d/sing-box stop
         cmd_status=$?
 
         if [ "$cmd_status" -eq 0 ]; then
