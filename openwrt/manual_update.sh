@@ -11,7 +11,7 @@ MANUAL_FILE="/etc/sing-box/manual.conf"
 DEFAULTS_FILE="/etc/sing-box/defaults.conf"
 
 # 获取当前模式
-MODE=$(grep -oP '(?<=^MODE=).*' /etc/sing-box/mode.conf)
+MODE=$(grep '^MODE=' /etc/sing-box/mode.conf | sed 's/^MODE=//')
 
 # 提示用户是否更换订阅的函数
 prompt_user_input() {
