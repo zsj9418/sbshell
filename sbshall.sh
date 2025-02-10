@@ -71,14 +71,16 @@ if grep -qi 'debian\|ubuntu\|armbian' /etc/os-release; then
 elif grep -qi 'openwrt' /etc/os-release; then
     echo -e "${GREEN}系统为OpenWRT,支持运行此脚本。${NC}"
     MAIN_SCRIPT_URL="$OPENWRT_MAIN_SCRIPT_URL"
-    DEPENDENCIES=("wget" "nftables")
+    DEPENDENCIES=("curl" "nftables" "bash")
 
     # 检查并安装缺失的依赖项
     for DEP in "${DEPENDENCIES[@]}"; do
         if [ "$DEP" == "nftables" ]; then
             CHECK_CMD="nft --version"
+        elif [ "$DEP" == "curl" ]; then
+            CHECK_CMD="curl --version"
         else
-            CHECK_CMD="wget --version"
+            CHECK_CMD="bash --version"
         fi
 
         if ! $CHECK_CMD &> /dev/null; then
@@ -112,7 +114,12 @@ else
 fi
 
 # 下载并执行主脚本
-wget -q -O "$SCRIPT_DIR/menu.sh" "$MAIN_SCRIPT_URL"
+if grep -qi 'openwrt' /etc/os-release; then
+    curl -s -o "$SCRIPT_DIR/menu.sh" "$MAIN_SCRIPT_URL"
+else
+    wget -q -O "$SCRIPT_DIR/menu.sh" "$MAIN_SCRIPT_URL"
+fi
+
 echo -e "${GREEN}脚本下载中,请耐心等待...${NC}"
 echo -e "${YELLOW}注意:安装更新singbox尽量使用代理环境,运行singbox切记关闭代理!${NC}"
 

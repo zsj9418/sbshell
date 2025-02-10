@@ -19,7 +19,9 @@ INITIALIZED_FILE="$SCRIPT_DIR/.initialized"
 
 # 确保脚本目录存在并设置权限
 mkdir -p "$SCRIPT_DIR"
-chown "$(whoami)":"$(whoami)" "$SCRIPT_DIR"
+if ! grep -qi 'openwrt' /etc/os-release; then
+    chown "$(whoami)":"$(whoami)" "$SCRIPT_DIR"
+fi
 
 # 脚本的URL基础路径
 BASE_URL="https://ghfast.top/https://raw.githubusercontent.com/qichiyuhub/sbshell/refs/heads/master/openwrt"
@@ -54,7 +56,7 @@ download_script() {
     local RETRY_DELAY=5
 
     for ((i=1; i<=RETRIES; i++)); do
-        if wget -q -O "$SCRIPT_DIR/$SCRIPT" "$BASE_URL/$SCRIPT"; then
+        if curl -s -o "$SCRIPT_DIR/$SCRIPT" "$BASE_URL/$SCRIPT"; then
             chmod +x "$SCRIPT_DIR/$SCRIPT"
             return 0
         else
@@ -122,7 +124,9 @@ initialize() {
 
 # 自动引导设置
 auto_setup() {
-    /etc/init.d/sing-box stop
+    if [ -f /etc/init.d/sing-box ]; then
+        /etc/init.d/sing-box stop
+    fi
     bash "$SCRIPT_DIR/check_environment.sh"
     command -v sing-box &> /dev/null || bash "$SCRIPT_DIR/install_singbox.sh" || bash "$SCRIPT_DIR/check_update.sh"
     bash "$SCRIPT_DIR/switch_mode.sh"
