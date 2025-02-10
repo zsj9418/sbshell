@@ -78,7 +78,6 @@ fi
 # 脚本列表
 SCRIPTS=(
     "check_environment.sh"
-    "check_update.sh"
     "install_singbox.sh"
     "manual_input.sh"
     "manual_update.sh"

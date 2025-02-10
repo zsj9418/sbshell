@@ -29,7 +29,6 @@ BASE_URL="https://ghfast.top/https://raw.githubusercontent.com/qichiyuhub/sbshel
 # 脚本列表
 SCRIPTS=(
     "check_environment.sh"     # 检查系统环境
-    "check_update.sh"          # 检查可用更新
     "install_singbox.sh"       # 安装 Sing-box
     "manual_input.sh"          # 手动输入配置
     "manual_update.sh"         # 手动更新配置
@@ -164,12 +163,11 @@ show_menu() {
     echo -e "${GREEN}3. 自动更新配置文件${NC}"
     echo -e "${GREEN}4. 手动启动 sing-box${NC}"
     echo -e "${GREEN}5. 手动停止 sing-box${NC}"
-    echo -e "${GREEN}6. 安装/更新 sing-box${NC}"
-    echo -e "${GREEN}7. 默认参数设置${NC}"
-    echo -e "${GREEN}8. 设置自启动${NC}"
-    echo -e "${GREEN}9. 常用命令${NC}"
-    echo -e "${GREEN}10. 更新脚本${NC}"
-    echo -e "${GREEN}11. 更新控制面板${NC}"
+    echo -e "${GREEN}6. 默认参数设置${NC}"
+    echo -e "${GREEN}7. 设置自启动${NC}"
+    echo -e "${GREEN}8. 常用命令${NC}"
+    echo -e "${GREEN}9. 更新脚本${NC}"
+    echo -e "${GREEN}10. 更新控制面板${NC}"
     echo -e "${GREEN}0. 退出${NC}"
     echo -e "${CYAN}=======================================${NC}"
 }
@@ -196,25 +194,18 @@ handle_choice() {
             bash "$SCRIPT_DIR/stop_singbox.sh"
             ;;
         6)
-            if command -v sing-box &> /dev/null; then
-                bash "$SCRIPT_DIR/check_update.sh"
-            else
-                bash "$SCRIPT_DIR/install_singbox.sh"
-            fi
-            ;;
-        7)
             bash "$SCRIPT_DIR/set_defaults.sh"
             ;;
-        8)
+        7)
             bash "$SCRIPT_DIR/manage_autostart.sh"
             ;;
-        9)
+        8)
             bash "$SCRIPT_DIR/commands.sh"
             ;;
-        10)
+        9)
             bash "$SCRIPT_DIR/update_scripts.sh"
             ;;
-        11)
+        10)
             bash "$SCRIPT_DIR/update_ui.sh"
             ;;
         0)
