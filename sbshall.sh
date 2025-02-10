@@ -71,16 +71,12 @@ if grep -qi 'debian\|ubuntu\|armbian' /etc/os-release; then
 elif grep -qi 'openwrt' /etc/os-release; then
     echo -e "${GREEN}系统为OpenWRT,支持运行此脚本。${NC}"
     MAIN_SCRIPT_URL="$OPENWRT_MAIN_SCRIPT_URL"
-    DEPENDENCIES=("curl" "nftables" "bash")
+    DEPENDENCIES=("nftables")
 
     # 检查并安装缺失的依赖项
     for DEP in "${DEPENDENCIES[@]}"; do
         if [ "$DEP" == "nftables" ]; then
             CHECK_CMD="nft --version"
-        elif [ "$DEP" == "curl" ]; then
-            CHECK_CMD="curl --version"
-        else
-            CHECK_CMD="bash --version"
         fi
 
         if ! $CHECK_CMD &> /dev/null; then

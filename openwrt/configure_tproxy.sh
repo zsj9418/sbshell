@@ -12,7 +12,7 @@ ReservedIP4='{ 127.0.0.0/8, 10.0.0.0/8, 100.64.0.0/10, 169.254.0.0/16, 172.16.0.
 CustomBypassIP='{ 192.168.0.0/16 }'  # 自定义绕过的 IP 地址集合
 
 # 读取当前模式
-MODE=$(grep -oP '(?<=^MODE=).*' /etc/sing-box/mode.conf)
+MODE=$(grep -E '^MODE=' /etc/sing-box/mode.conf | sed 's/^MODE=//')
 
 # 检查指定路由表是否存在
 check_route_exists() {

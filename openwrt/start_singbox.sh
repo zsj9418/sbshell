@@ -21,7 +21,7 @@ check_mode() {
 
 # 应用防火墙规则
 apply_firewall() {
-    MODE=$(grep -oP '(?<=^MODE=).*' /etc/sing-box/mode.conf)
+    MODE=$(grep -E '^MODE=' /etc/sing-box/mode.conf | sed 's/^MODE=//')
     if [ "$MODE" = "TProxy" ]; then
         bash "$SCRIPT_DIR/configure_tproxy.sh"
     elif [ "$MODE" = "TUN" ]; then
