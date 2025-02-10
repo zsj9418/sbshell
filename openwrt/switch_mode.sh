@@ -12,16 +12,6 @@ if ! command -v sing-box &> /dev/null; then
     exit 1
 fi
 
-# 停止 sing-box 服务
-function stop_singbox() {
-    /etc/init.d/sing-box stop
-    if ! pgrep -x "sing-box" > /dev/null; then
-        echo "sing-box 已停止"
-    else
-        exit 1
-    fi
-}
-
 # 切换模式的逻辑
 echo "切换模式开始...请根据提示输入操作。"
 
@@ -31,13 +21,11 @@ while true; do
 
     case $mode_choice in
         1)
-            stop_singbox
             echo "MODE=TProxy" | tee /etc/sing-box/mode.conf > /dev/null
             echo -e "${GREEN}当前选择模式为:TProxy 模式${NC}"
             break
             ;;
         2)
-            stop_singbox
             echo "MODE=TUN" | tee /etc/sing-box/mode.conf > /dev/null
             echo -e "${GREEN}当前选择模式为:TUN 模式${NC}"
             break

@@ -12,6 +12,7 @@ else
     # 更新包列表并安装必要的依赖和 sing-box
     echo "正在更新包列表并安装 sing-box,请稍候..."
     opkg update >/dev/null 2>&1
+    opkg install kmod-nft-tproxy >/dev/null 2>&1
     opkg install sing-box >/dev/null 2>&1
 
     if command -v sing-box &> /dev/null; then
