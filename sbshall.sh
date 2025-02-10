@@ -13,24 +13,6 @@ YELLOW='\033[1;33m'
 RED='\033[0;31m'
 NC='\033[0m' # 无颜色
 
-# 检查 sudo 是否安装
-if ! command -v sudo &> /dev/null; then
-    echo -e "${RED}sudo 未安装。${NC}"
-    read -rp "是否安装 sudo?(y/n): " install_sudo
-    if [[ "$install_sudo" =~ ^[Yy]$ ]]; then
-        apt-get update
-        apt-get install -y sudo
-        if ! command -v sudo &> /dev/null; then
-            echo -e "${RED}安装 sudo 失败，请手动安装 sudo 并重新运行此脚本。${NC}"
-            exit 1
-        fi
-        echo -e "${GREEN}sudo 安装成功。${NC}"
-    else
-        echo -e "${RED}由于未安装 sudo,脚本无法继续运行。${NC}"
-        exit 1
-    fi
-fi
-
 # 检查系统是否支持
 if [[ "$(uname -s)" != "Linux" ]]; then
     echo -e "${RED}当前系统不支持运行此脚本。${NC}"
@@ -42,6 +24,24 @@ if grep -qi 'debian\|ubuntu\|armbian' /etc/os-release; then
     echo -e "${GREEN}系统为Debian/Ubuntu/Armbian,支持运行此脚本。${NC}"
     MAIN_SCRIPT_URL="$DEBIAN_MAIN_SCRIPT_URL"
     DEPENDENCIES=("wget" "nftables")
+
+    # 检查 sudo 是否安装
+    if ! command -v sudo &> /dev/null; then
+        echo -e "${RED}sudo 未安装。${NC}"
+        read -rp "是否安装 sudo?(y/n): " install_sudo
+        if [[ "$install_sudo" =~ ^[Yy]$ ]]; then
+            apt-get update
+            apt-get install -y sudo
+            if ! command -v sudo &> /dev/null; then
+                echo -e "${RED}安装 sudo 失败，请手动安装 sudo 并重新运行此脚本。${NC}"
+                exit 1
+            fi
+            echo -e "${GREEN}sudo 安装成功。${NC}"
+        else
+            echo -e "${RED}由于未安装 sudo,脚本无法继续运行。${NC}"
+            exit 1
+        fi
+    fi
 
     # 检查并安装缺失的依赖项
     for DEP in "${DEPENDENCIES[@]}"; do
@@ -104,8 +104,12 @@ else
 fi
 
 # 确保脚本目录存在并设置权限
-sudo mkdir -p "$SCRIPT_DIR"
-sudo chown "$(whoami)":"$(whoami)" "$SCRIPT_DIR"
+if grep -qi 'openwrt' /etc/os-release; then
+    mkdir -p "$SCRIPT_DIR"
+else
+    sudo mkdir -p "$SCRIPT_DIR"
+    sudo chown "$(whoami)":"$(whoami)" "$SCRIPT_DIR"
+fi
 
 # 下载并执行主脚本
 wget -q -O "$SCRIPT_DIR/menu.sh" "$MAIN_SCRIPT_URL"
