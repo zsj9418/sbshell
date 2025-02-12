@@ -105,6 +105,9 @@ table inet sing-box {
         # 保留地址绕过
         ip daddr @RESERVED_IPSET accept
 
+        #放行所有经过 DNAT 的流量
+        ct status dnat accept comment "Allow forwarded traffic"
+
         # 重定向剩余流量到 TProxy 端口并设置标记
         meta l4proto { tcp, udp } tproxy to :$TPROXY_PORT meta mark set $PROXY_FWMARK
     }
