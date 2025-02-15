@@ -18,6 +18,14 @@ if [[ "$(uname -s)" != "Linux" ]]; then
     echo -e "${RED}当前系统不支持运行此脚本。${NC}"
     exit 1
 fi
+# 获取防火墙的版本，检查是否使用 iptables
+fw_version=$(fw3 status 2>&1)
+
+# 判断是否包含 "iptables"
+if echo "$fw_version" | grep -q "iptables"; then
+    echo -e "${RED}当前防火墙使用的是 iptables，请使用 nftables。${NC}"
+    exit 1
+fi
 
 # 检查发行版并下载相应的主脚本
 if grep -qi 'debian\|ubuntu\|armbian' /etc/os-release; then
